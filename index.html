@@ -1,0 +1,1056 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ForCyclers Coaching Program</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --black: #0f0f0f;
+    --white: #ffffff;
+    --blue: #1d4ed8;
+    --gray-muted: #555555;
+    --gray-light: #888888;
+    --border: rgba(0,0,0,0.1);
+    --bg-card: #fafafa;
+  }
+  html, body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--white);
+    color: var(--black);
+    line-height: 1.5;
+    overflow: hidden;
+    height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  .deck {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+  }
+  .slide {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    padding: 64px 96px 120px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease;
+  }
+  .slide.active {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .slide-head {
+    margin-bottom: 48px;
+  }
+  .slide-label {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--blue);
+    margin-bottom: 20px;
+  }
+  .slide-headline {
+    font-size: 72px;
+    font-weight: 900;
+    line-height: 1.0;
+    letter-spacing: -0.04em;
+    margin-bottom: 16px;
+  }
+  .slide-subtitle {
+    font-size: 22px;
+    font-weight: 500;
+    color: var(--gray-muted);
+    max-width: 900px;
+    line-height: 1.4;
+  }
+  .slide-footer {
+    margin-top: 40px;
+    padding-top: 28px;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--black);
+    border-top: 1px solid var(--border);
+    max-width: 1100px;
+  }
+
+  .cards-3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+  }
+  .card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 32px;
+    min-height: 180px;
+  }
+  .card-num {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    color: var(--blue);
+    margin-bottom: 14px;
+  }
+  .card-title {
+    font-size: 24px;
+    font-weight: 800;
+    line-height: 1.2;
+    margin-bottom: 12px;
+    letter-spacing: -0.01em;
+  }
+  .card-desc {
+    font-size: 16px;
+    color: var(--gray-muted);
+    line-height: 1.5;
+  }
+
+  .split-2 {
+    display: grid;
+    grid-template-columns: 1fr 1.15fr;
+    gap: 48px;
+    align-items: start;
+  }
+  .split-bullets {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+  .bullet {
+    border-left: 3px solid var(--blue);
+    padding: 6px 0 6px 20px;
+  }
+  .bullet-num {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    color: var(--blue);
+    margin-bottom: 6px;
+  }
+  .bullet-title {
+    font-size: 22px;
+    font-weight: 800;
+    line-height: 1.2;
+    margin-bottom: 8px;
+    letter-spacing: -0.01em;
+  }
+  .bullet-desc {
+    font-size: 15px;
+    color: var(--gray-muted);
+    line-height: 1.5;
+  }
+  .preview {
+    width: 100%;
+    aspect-ratio: 16/11;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--gray-light);
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+  .preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+    display: block;
+  }
+  .preview.calendar-shot {
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: stretch;
+    padding: 0;
+    aspect-ratio: auto;
+    background: #0a0a0a;
+    overflow: hidden;
+    position: relative;
+  }
+  .preview.calendar-shot img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top left;
+    display: block;
+  }
+  .calendar-caption {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.85), rgba(0,0,0,0));
+    padding: 40px 20px 16px;
+    color: #fff;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+  }
+  .step-hero {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 80px;
+    margin-top: 12px;
+  }
+  .step-hero-visual {
+    background: #0a0a0a;
+    border-radius: 24px;
+    padding: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    max-height: 540px;
+    max-width: 360px;
+    box-shadow: 0 12px 48px rgba(0,0,0,0.18);
+  }
+  .step-hero-visual img {
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    display: block;
+    border-radius: 10px;
+  }
+  .step-hero-body {
+    max-width: 460px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+  .step-hero-eyebrow {
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--blue);
+  }
+  .step-hero-title {
+    font-size: 60px;
+    font-weight: 900;
+    line-height: 1.0;
+    letter-spacing: -0.04em;
+    color: var(--black);
+  }
+  .step-hero-desc {
+    font-size: 19px;
+    color: var(--gray-muted);
+    line-height: 1.5;
+    font-weight: 500;
+  }
+  .step-hero-points {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 6px;
+    padding-top: 18px;
+    border-top: 1px solid var(--border);
+  }
+  .step-hero-point {
+    font-size: 15px;
+    color: var(--black);
+    font-weight: 600;
+    padding-left: 18px;
+    position: relative;
+  }
+  .step-hero-point::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 8px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--blue);
+  }
+
+  .coach-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+  }
+  .coach-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 28px;
+    display: flex;
+    flex-direction: column;
+  }
+  .coach-photo {
+    width: 100%;
+    aspect-ratio: 4/3;
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    margin-bottom: 20px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--gray-light);
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+  .coach-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center top;
+    display: block;
+  }
+  .coach-tag {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    color: var(--blue);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .coach-title {
+    font-size: 22px;
+    font-weight: 800;
+    line-height: 1.2;
+    margin-bottom: 12px;
+    letter-spacing: -0.01em;
+  }
+  .coach-desc {
+    font-size: 15px;
+    color: var(--gray-muted);
+    line-height: 1.5;
+  }
+
+  .loop {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 28px;
+  }
+  .loop-step {
+    text-align: left;
+  }
+  .loop-step-num {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: var(--blue);
+    color: var(--white);
+    font-weight: 800;
+    font-size: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+  }
+  .loop-step-title {
+    font-size: 22px;
+    font-weight: 800;
+    margin-bottom: 10px;
+    letter-spacing: -0.01em;
+  }
+  .loop-step-desc {
+    font-size: 15px;
+    color: var(--gray-muted);
+    line-height: 1.5;
+  }
+
+  .how-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    align-items: stretch;
+  }
+  .how-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+  }
+  .how-num {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    color: var(--blue);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .how-title {
+    font-size: 22px;
+    font-weight: 800;
+    line-height: 1.2;
+    margin-bottom: 16px;
+    letter-spacing: -0.01em;
+  }
+  .how-visual {
+    flex: 1;
+    margin-bottom: 16px;
+    border-radius: 12px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 300px;
+    max-height: 440px;
+  }
+  .how-visual-phone {
+    background: #0a0a0a;
+    padding: 22px;
+  }
+  .how-visual-phone img {
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    object-position: center;
+    display: block;
+  }
+  .how-visual-devices {
+    background: #0a0a0a;
+    padding: 20px;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .device-watch {
+    width: 138px;
+    height: 138px;
+    border-radius: 50%;
+    background: #0f0f0f;
+    border: 3px solid #1f1f1f;
+    box-shadow: 0 0 0 4px #0a0a0a, inset 0 0 0 1px #2a2a2a, 0 4px 16px rgba(0,0,0,0.6);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 14px 10px;
+    text-align: center;
+    color: #fff;
+    position: relative;
+  }
+  .device-watch::before,
+  .device-watch::after {
+    content: '';
+    position: absolute;
+    right: -7px;
+    width: 4px;
+    height: 12px;
+    background: #2a2a2a;
+    border-radius: 2px;
+  }
+  .device-watch::before { top: 30%; }
+  .device-watch::after { top: 56%; }
+  .watch-label {
+    font-size: 8px;
+    letter-spacing: 0.22em;
+    color: #888;
+    font-weight: 700;
+    margin-bottom: 3px;
+  }
+  .watch-title {
+    font-size: 14px;
+    font-weight: 800;
+    color: #fff;
+    line-height: 1;
+    margin-bottom: 5px;
+    letter-spacing: -0.01em;
+  }
+  .watch-target {
+    font-size: 19px;
+    font-weight: 800;
+    color: #fbbf24;
+    line-height: 1;
+    margin-bottom: 3px;
+  }
+  .watch-meta {
+    font-size: 9px;
+    color: #999;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+  }
+  .device-edge {
+    width: 100%;
+    max-width: 280px;
+    background: #1a1a1a;
+    border-radius: 14px;
+    padding: 5px;
+    box-shadow: 0 0 0 3px #0a0a0a, 0 4px 16px rgba(0,0,0,0.6);
+  }
+  .edge-screen {
+    background: #0a0a0a;
+    border-radius: 9px;
+    padding: 14px 16px 12px;
+    color: #fff;
+    position: relative;
+  }
+  .edge-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  .edge-label {
+    font-size: 9px;
+    letter-spacing: 0.22em;
+    color: #888;
+    font-weight: 700;
+  }
+  .edge-battery {
+    font-size: 9px;
+    color: #888;
+    font-weight: 700;
+  }
+  .edge-title {
+    font-size: 18px;
+    font-weight: 800;
+    line-height: 1.1;
+    margin-bottom: 3px;
+    color: #fff;
+    letter-spacing: -0.01em;
+  }
+  .edge-meta {
+    font-size: 11px;
+    color: #aaa;
+    margin-bottom: 10px;
+    font-weight: 500;
+  }
+  .edge-divider {
+    height: 1px;
+    background: #2a2a2a;
+    margin-bottom: 10px;
+  }
+  .edge-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    color: #ccc;
+    font-weight: 600;
+    margin-bottom: 5px;
+  }
+  .edge-row:last-child {
+    margin-bottom: 0;
+  }
+  .edge-row span:last-child {
+    color: #fbbf24;
+    font-weight: 700;
+  }
+  .device-label {
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    color: #666;
+    font-weight: 700;
+    text-transform: uppercase;
+    margin-top: -6px;
+  }
+  .how-visual-coach {
+    background: var(--bg-card);
+  }
+  .how-visual-coach img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 35%;
+    display: block;
+  }
+  .how-desc {
+    font-size: 14px;
+    color: var(--gray-muted);
+    line-height: 1.5;
+  }
+
+  .testi-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+  }
+  .testi-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 28px;
+    display: flex;
+    flex-direction: column;
+  }
+  .testi-photo {
+    width: 100%;
+    aspect-ratio: 1/1;
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    margin-bottom: 20px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--gray-light);
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+  .testi-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 20%;
+    display: block;
+  }
+  .testi-name {
+    font-size: 22px;
+    font-weight: 800;
+    margin-bottom: 12px;
+    letter-spacing: -0.01em;
+  }
+  .testi-result {
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--blue);
+    line-height: 1.4;
+  }
+
+  .steps {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 28px;
+    position: relative;
+  }
+  .steps::before {
+    content: '';
+    position: absolute;
+    top: 27px;
+    left: 32px;
+    right: 32px;
+    height: 2px;
+    background: var(--border);
+    z-index: 0;
+  }
+  .step {
+    position: relative;
+    z-index: 1;
+  }
+  .step-dot {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: var(--blue);
+    color: var(--white);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    font-weight: 800;
+    margin-bottom: 24px;
+  }
+  .step-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    color: var(--blue);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .step-title {
+    font-size: 24px;
+    font-weight: 800;
+    margin-bottom: 10px;
+    letter-spacing: -0.01em;
+  }
+  .step-desc {
+    font-size: 15px;
+    color: var(--gray-muted);
+    line-height: 1.5;
+  }
+
+  .nav {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    background: rgba(255,255,255,0.96);
+    border: 1px solid var(--border);
+    padding: 6px 14px;
+    border-radius: 50px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+    z-index: 10;
+    backdrop-filter: blur(8px);
+  }
+  .nav-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 8px 14px;
+    border-radius: 24px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--gray-muted);
+    font-family: inherit;
+    transition: all 0.15s;
+  }
+  .nav-btn:hover {
+    background: var(--bg-card);
+    color: var(--black);
+  }
+  .nav-dots {
+    display: flex;
+    gap: 8px;
+  }
+  .nav-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--border);
+    cursor: pointer;
+    transition: background 0.15s;
+    border: none;
+    padding: 0;
+  }
+  .nav-dot.active {
+    background: var(--blue);
+  }
+  .nav-counter {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--gray-light);
+    min-width: 44px;
+    text-align: center;
+    letter-spacing: 0.04em;
+  }
+
+  @media (max-width: 1280px) {
+    .slide-headline { font-size: 56px; }
+    .slide { padding: 48px 64px 100px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="deck">
+
+  <div class="slide active" data-slide="1">
+    <div class="slide-head">
+      <div class="slide-label">Pillar 1 of 3</div>
+      <h1 class="slide-headline">Performance Diagnostic</h1>
+      <p class="slide-subtitle">Where the work begins. The starting point of every program.</p>
+    </div>
+    <div class="cards-3">
+      <div class="card">
+        <div class="card-num">01</div>
+        <div class="card-title">Full assessment</div>
+        <div class="card-desc">Training history, current FTP, weekly load patterns over the last 90 days.</div>
+      </div>
+      <div class="card">
+        <div class="card-num">02</div>
+        <div class="card-title">Recovery audit</div>
+        <div class="card-desc">Sleep, HRV trends, fatigue patterns, stress load, and how they're shaping adaptation.</div>
+      </div>
+      <div class="card">
+        <div class="card-num">03</div>
+        <div class="card-title">The 2 to 3 limiters</div>
+        <div class="card-desc">Pinpoint exactly what's blocking your FTP progression. Not what you think. What experience shows.</div>
+      </div>
+    </div>
+    <p class="slide-footer">Most cyclists are training around the wrong limiter. Step one is finding it.</p>
+  </div>
+
+  <div class="slide" data-slide="2">
+    <div class="slide-head">
+      <div class="slide-label">Pillar 2 of 3</div>
+      <h1 class="slide-headline">Custom Training Plan</h1>
+      <p class="slide-subtitle">Built for you. Not a template pulled off the internet.</p>
+    </div>
+    <div class="split-2">
+      <div class="split-bullets">
+        <div class="bullet">
+          <div class="bullet-num">01</div>
+          <div class="bullet-title">Designed around your life</div>
+          <div class="bullet-desc">Schedule, physiology, available hours, target events, and travel windows.</div>
+        </div>
+        <div class="bullet">
+          <div class="bullet-num">02</div>
+          <div class="bullet-title">Zero cookie-cutter blocks</div>
+          <div class="bullet-desc">No 12-week generic plan pulled off a platform.</div>
+        </div>
+        <div class="bullet">
+          <div class="bullet-num">03</div>
+          <div class="bullet-title">Built by your coach</div>
+          <div class="bullet-desc">Based on the diagnostic. Owned and iterated week to week.</div>
+        </div>
+      </div>
+      <div class="preview calendar-shot">
+        <img src="assets/vekta-calendar.png" alt="A real client's custom week, built by their coach">
+        <div class="calendar-caption">A real client's week. Built by their coach.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="slide" data-slide="3">
+    <div class="slide-head">
+      <div class="slide-label">Your Coach</div>
+      <h1 class="slide-headline">A roster, not a single coach</h1>
+      <p class="slide-subtitle">Every coach on the team has a specialty. The diagnostic call is where we find your match.</p>
+    </div>
+    <div class="coach-grid">
+      <div class="coach-card">
+        <div class="coach-photo"><img src="assets/coach-triathlete.jpeg" alt="Triathlete coach"></div>
+        <div class="coach-tag">Specialty</div>
+        <div class="coach-title">Triathlete who wants to ride faster</div>
+        <div class="coach-desc">13+ years coaching full time. Rebuilt cycling top-end power for masters podium athletes transitioning off steady-state triathlon volume.</div>
+      </div>
+      <div class="coach-card">
+        <div class="coach-photo"><img src="assets/coach-race-focused.jpeg" alt="Race-focused coach"></div>
+        <div class="coach-tag">Specialty</div>
+        <div class="coach-title">Race-focused performance</div>
+        <div class="coach-desc">Ran a national cycling program for 5 years. Coached Olympic-level and pro-tour riders. Specialty: structured power programming for masters category podium results.</div>
+      </div>
+      <div class="coach-card">
+        <div class="coach-photo"><img src="assets/coach-time-constrained.jpeg" alt="Time-constrained coach"></div>
+        <div class="coach-tag">Specialty</div>
+        <div class="coach-title">Time-constrained cyclist</div>
+        <div class="coach-desc">Specialty: CEOs, doctors, pilots riding 5 to 8 hours per week with 40 to 50 percent travel. Builds gains on low volume by retiming intensity around real life.</div>
+      </div>
+    </div>
+    <p class="slide-footer">No random assignment. We match you based on your background, your goal, and your schedule.</p>
+  </div>
+
+  <div class="slide" data-slide="4">
+    <div class="slide-head">
+      <div class="slide-label">Pillar 3 of 3</div>
+      <h1 class="slide-headline">The Performance Loop</h1>
+      <p class="slide-subtitle">What separates us from every app you've tried.</p>
+    </div>
+    <div class="loop">
+      <div class="loop-step">
+        <div class="loop-step-num">1</div>
+        <div class="loop-step-title">You ride</div>
+        <div class="loop-step-desc">Data syncs automatically from Garmin, Strava, Wahoo, or TrainerRoad.</div>
+      </div>
+      <div class="loop-step">
+        <div class="loop-step-num">2</div>
+        <div class="loop-step-title">Your coach reads</div>
+        <div class="loop-step-desc">Every ride reviewed within 24 hours. Power curves, HRV, recovery signals.</div>
+      </div>
+      <div class="loop-step">
+        <div class="loop-step-num">3</div>
+        <div class="loop-step-title">Plan adjusts</div>
+        <div class="loop-step-desc">Adjusted based on fatigue, HRV trends, sleep, and real-life context.</div>
+      </div>
+      <div class="loop-step">
+        <div class="loop-step-num">4</div>
+        <div class="loop-step-title">You compound</div>
+        <div class="loop-step-desc">Every block builds on the last. You stop guessing.</div>
+      </div>
+    </div>
+    <p class="slide-footer">Most apps end at step 1. The loop is the difference between training and progressing.</p>
+  </div>
+
+  <div class="slide" data-slide="5">
+    <div class="slide-head">
+      <div class="slide-label">How It Works — Step 1 of 3</div>
+      <h1 class="slide-headline">Connect your gear</h1>
+    </div>
+    <div class="step-hero">
+      <div class="step-hero-visual"><img src="assets/vekta-sync-gear-mobile.jpg" alt="Connect Garmin, Wahoo, Zwift, Hammerhead, Coros"></div>
+      <div class="step-hero-body">
+        <div class="step-hero-eyebrow">One tap from your phone</div>
+        <div class="step-hero-title">Sync once. Done.</div>
+        <div class="step-hero-desc">Garmin, Wahoo, Zwift, Hammerhead, Coros. Your training data flows in automatically.</div>
+        <div class="step-hero-points">
+          <div class="step-hero-point">No spreadsheets. No manual logging.</div>
+          <div class="step-hero-point">Every ride uploads the second you're done.</div>
+          <div class="step-hero-point">Your coach sees it. Same day.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="slide" data-slide="6">
+    <div class="slide-head">
+      <div class="slide-label">How It Works — Step 2 of 3</div>
+      <h1 class="slide-headline">Ride your session</h1>
+    </div>
+    <div class="step-hero">
+      <div class="step-hero-visual"><img src="assets/vekta-mobile-plan.png" alt="Your custom plan in the Vekta mobile app"></div>
+      <div class="step-hero-body">
+        <div class="step-hero-eyebrow">On your phone, watch, and bike computer</div>
+        <div class="step-hero-title">Open the app. Hit start.</div>
+        <div class="step-hero-desc">Your custom plan lives in the app. Today's session pushes straight to your Garmin watch and bike computer.</div>
+        <div class="step-hero-points">
+          <div class="step-hero-point">Full structure, targets, intervals on screen.</div>
+          <div class="step-hero-point">No setup before each ride. You only have to ride.</div>
+          <div class="step-hero-point">Plan auto-adjusts week to week.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="slide" data-slide="7">
+    <div class="slide-head">
+      <div class="slide-label">How It Works — The Full Loop</div>
+      <h1 class="slide-headline">Three steps. Every ride.</h1>
+      <p class="slide-subtitle">Connect once. Ride. Your coach reads the data and adapts the next session. The loop closes daily.</p>
+    </div>
+    <div class="how-grid">
+      <div class="how-card">
+        <div class="how-num">Step 1</div>
+        <div class="how-title">Connect your gear</div>
+        <div class="how-visual how-visual-phone"><img src="assets/vekta-sync-gear-mobile.jpg" alt="Connect Garmin, Wahoo, Zwift, Hammerhead, Coros"></div>
+        <div class="how-desc">One click from your phone. Garmin, Wahoo, Zwift, Hammerhead, Coros. Your training data flows in automatically. No spreadsheets, no manual logging.</div>
+      </div>
+      <div class="how-card">
+        <div class="how-num">Step 2</div>
+        <div class="how-title">Ride your session</div>
+        <div class="how-visual how-visual-phone"><img src="assets/vekta-mobile-plan.png" alt="Your daily plan on the Vekta mobile app"></div>
+        <div class="how-desc">Your full plan lives in the app on your phone. It pushes straight to your Garmin watch and bike computer. No setup, no manual upload. You only have to ride.</div>
+      </div>
+      <div class="how-card">
+        <div class="how-num">Step 3</div>
+        <div class="how-title">Coach reads and adapts</div>
+        <div class="how-visual how-visual-coach"><img src="assets/vekta-coach-reads.jpeg" alt="Your coach reads every ride and adapts the plan"></div>
+        <div class="how-desc">Every ride reviewed within 24 hours. Power curves, HRV drift, recovery signals. Tomorrow's session adjusts based on what your data shows. A real human, not an algorithm.</div>
+      </div>
+    </div>
+    <p class="slide-footer">No waiting a week for a plan refresh. Plus direct WhatsApp access to your coach, same day.</p>
+  </div>
+
+  <div class="slide" data-slide="8">
+    <div class="slide-head">
+      <div class="slide-label">Proof</div>
+      <h1 class="slide-headline">Real Results</h1>
+      <p class="slide-subtitle">From cyclists like you.</p>
+    </div>
+    <div class="testi-grid">
+      <div class="testi-card">
+        <div class="testi-photo"><img src="assets/mike.png" alt="Mike"></div>
+        <div class="testi-name">Mike, 58</div>
+        <div class="testi-result">+40 watts FTP. Lost 33 lbs. Finished his first century ride.</div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-photo"><img src="assets/thomas.png" alt="Thomas"></div>
+        <div class="testi-name">Thomas, 52</div>
+        <div class="testi-result">240w to 267w FTP in 12 weeks. Lost 18 lbs. Same training hours.</div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-photo"><img src="assets/bryan.png" alt="Bryan"></div>
+        <div class="testi-name">Bryan, 49</div>
+        <div class="testi-result">Plateau broken after 18 months. Less fatigue, more progress. Finally training with control.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="slide" data-slide="9">
+    <div class="slide-head">
+      <div class="slide-label">What happens next</div>
+      <h1 class="slide-headline">Your First Steps With Us</h1>
+      <p class="slide-subtitle">From this call to your first custom session, on the bike.</p>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-dot">1</div>
+        <div class="step-label">Today</div>
+        <div class="step-title">You sign</div>
+        <div class="step-desc">We confirm your coach match based on the diagnostic.</div>
+      </div>
+      <div class="step">
+        <div class="step-dot">2</div>
+        <div class="step-label">Within 24 hours</div>
+        <div class="step-title">Platform setup</div>
+        <div class="step-desc">Vekta account created. One click connects Garmin or Strava.</div>
+      </div>
+      <div class="step">
+        <div class="step-dot">3</div>
+        <div class="step-label">Day 3</div>
+        <div class="step-title">Onboarding call</div>
+        <div class="step-desc">60 minutes with your coach. Goals, constraints, race calendar.</div>
+      </div>
+      <div class="step">
+        <div class="step-dot">4</div>
+        <div class="step-label">Week 1</div>
+        <div class="step-title">First sessions</div>
+        <div class="step-desc">Your custom plan goes live. You start riding under your coach.</div>
+      </div>
+    </div>
+    <p class="slide-footer">You're training under your own custom plan within a week of saying yes.</p>
+  </div>
+
+</div>
+
+<div class="nav">
+  <button class="nav-btn" id="prev">Prev</button>
+  <div class="nav-dots">
+    <button class="nav-dot active" data-target="1" aria-label="Slide 1"></button>
+    <button class="nav-dot" data-target="2" aria-label="Slide 2"></button>
+    <button class="nav-dot" data-target="3" aria-label="Slide 3"></button>
+    <button class="nav-dot" data-target="4" aria-label="Slide 4"></button>
+    <button class="nav-dot" data-target="5" aria-label="Slide 5"></button>
+    <button class="nav-dot" data-target="6" aria-label="Slide 6"></button>
+    <button class="nav-dot" data-target="7" aria-label="Slide 7"></button>
+    <button class="nav-dot" data-target="8" aria-label="Slide 8"></button>
+    <button class="nav-dot" data-target="9" aria-label="Slide 9"></button>
+  </div>
+  <div class="nav-counter">1 / 9</div>
+  <button class="nav-btn" id="next">Next</button>
+</div>
+
+<script>
+(function() {
+  const slides = document.querySelectorAll('.slide');
+  const dots = document.querySelectorAll('.nav-dot');
+  const counter = document.querySelector('.nav-counter');
+  let current = 1;
+
+  function go(n) {
+    if (n < 1) n = 1;
+    if (n > slides.length) n = slides.length;
+    current = n;
+    slides.forEach((s, i) => s.classList.toggle('active', i === n - 1));
+    dots.forEach((d, i) => d.classList.toggle('active', i === n - 1));
+    counter.textContent = n + ' / ' + slides.length;
+  }
+
+  document.getElementById('prev').addEventListener('click', () => go(current - 1));
+  document.getElementById('next').addEventListener('click', () => go(current + 1));
+  dots.forEach((dot) => {
+    dot.addEventListener('click', () => go(parseInt(dot.dataset.target)));
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
+      e.preventDefault();
+      go(current + 1);
+    } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+      e.preventDefault();
+      go(current - 1);
+    } else if (e.key === 'Home') {
+      go(1);
+    } else if (e.key === 'End') {
+      go(slides.length);
+    }
+  });
+})();
+</script>
+
+</body>
+</html>
